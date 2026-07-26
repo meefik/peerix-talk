@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "@/hooks/use-router";
 import { useStorage } from "@/hooks/use-storage";
 import { useRoom } from "@/hooks/use-room";
-import { usePeer } from "@/hooks/use-peer";
+import { usePeerix } from "@/hooks/use-peerix";
 import { useMediaShare } from "@/hooks/use-media-share";
 import { useChatBridge } from "@/hooks/use-chat-bridge";
 import { LobbyView } from "@/views/lobby/lobby-view";
@@ -14,9 +14,9 @@ export function RoomController() {
   const { route } = useRouter();
   const { setMessages } = useRoom();
   const { value: username } = useStorage("username");
-  const { peerRef, join, leave } = usePeer();
-  const streamRef = useMediaShare(peerRef);
-  useChatBridge(peerRef);
+  const { roomRef, join, leave } = usePeerix();
+  const streamRef = useMediaShare(roomRef);
+  useChatBridge(roomRef);
 
   const handleJoin = useCallback(async () => {
     await join(streamRef.current);

@@ -22,8 +22,10 @@ export function LobbyView({ onJoin }: { onJoin: () => Promise<void> }) {
   return (
     <div className="flex h-max w-96 flex-col overflow-auto rounded bg-background shadow">
       <header className="flex items-center gap-4 p-4">
-        <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
-        <Separator orientation="vertical" />
+        <div className="hidden sm:flex gap-2">
+          <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
+          <Separator orientation="vertical" />
+        </div>
         <div className="min-w-0 flex flex-col">
           <div className="text-sm truncate">{t("common.appName")}</div>
           <div className="text-xs font-bold font-mono truncate">#{roomId}</div>

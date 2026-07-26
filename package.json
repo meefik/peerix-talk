@@ -1,9 +1,9 @@
 {
   "name": "peerix-talk",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A peer-to-peer web video conferencing app with Peerix.",
-  "author": "Anton Skshidlevsky <meefik@gmail.com>",
+  "author": "Anton Skshidlevsky <anton@meefik.dev>",
   "license": "MIT",
   "homepage": "https://talk.peerix.dev",
   "repository": {
@@ -33,7 +33,7 @@
     "jdenticon": "^3.3.0",
     "mqtt": "^5.15.2",
     "next-themes": "^0.4.6",
-    "peerix": "^0.6.0",
+    "peerix": "^0.7.0",
     "radix-ui": "^1.6.7",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

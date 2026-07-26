@@ -3,9 +3,9 @@ import { toast } from "sonner";
 import { useRoom } from "@/hooks/use-room";
 import { useStorage } from "@/hooks/use-storage";
 import { getUserMedia, getDisplayMedia } from "@/lib/media";
-import type { Peer } from "peerix";
+import type { Room } from "@/hooks/use-peerix";
 
-export function useMediaShare(peerRef: React.MutableRefObject<Peer | null>) {
+export function useMediaShare(roomRef: React.MutableRefObject<Room | null>) {
   const { mic, cam, scr, toggleCam, toggleMic, toggleScr } = useRoom();
   const { value: audioDeviceId } = useStorage("audioDeviceId");
   const { value: videoDeviceId } = useStorage("videoDeviceId");
@@ -17,7 +17,7 @@ export function useMediaShare(peerRef: React.MutableRefObject<Peer | null>) {
         try {
           const stream = await getUserMedia({ audio: mic, video: cam, audioDeviceId, videoDeviceId });
           streamRef.current = stream;
-          peerRef.current?.share({ stream, label: "camera" });
+          roomRef.current?.share({ stream, label: "camera" });
         } catch (err) {
           toast.error(err instanceof Error ? err.message : String(err), { position: "top-center" });
           toggleCam(false);
@@ -26,7 +26,7 @@ export function useMediaShare(peerRef: React.MutableRefObject<Peer | null>) {
       }
       acquire();
     } else {
-      peerRef.current?.unshare({ label: "camera" });
+      roomRef.current?.unshare({ label: "camera" });
       streamRef.current = null;
     }
   }, [mic, cam]);
@@ -36,7 +36,7 @@ export function useMediaShare(peerRef: React.MutableRefObject<Peer | null>) {
       async function acquire() {
         try {
           const stream = await getDisplayMedia();
-          peerRef.current?.share({ stream, label: "screen" });
+          roomRef.current?.share({ stream, label: "screen" });
         } catch (err) {
           toast.error(err instanceof Error ? err.message : String(err), { position: "top-center" });
           toggleScr(false);
@@ -44,7 +44,7 @@ export function useMediaShare(peerRef: React.MutableRefObject<Peer | null>) {
       }
       acquire();
     } else {
-      peerRef.current?.unshare({ label: "screen" });
+      roomRef.current?.unshare({ label: "screen" });
     }
   }, [scr]);
 

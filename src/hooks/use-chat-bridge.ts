@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 import { useRoom } from "@/hooks/use-room";
-import type { Peer } from "peerix";
+import type { Room } from "@/hooks/use-peerix";
 
-export function useChatBridge(peerRef: React.MutableRefObject<Peer | null>) {
+export function useChatBridge(roomRef: React.MutableRefObject<Room | null>) {
   const { messages } = useRoom();
 
   useEffect(() => {
-    const peer = peerRef.current;
+    const room = roomRef.current;
     const msg = messages[messages.length - 1];
-    if (peer && msg && !msg.peer) {
-      peer.send(msg, { label: "chat" });
+    if (room && msg && !msg.peer) {
+      room.send(msg, { label: "chat" });
     }
   }, [messages]);
 }
