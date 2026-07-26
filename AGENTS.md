@@ -32,6 +32,7 @@ src/
 └── views/          # all views
 public/             # static assets + i18n locale files
 index.html          # HTML template
+README.md           # project overview
 ```
 
 ## Design Principles

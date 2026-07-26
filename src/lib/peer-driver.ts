@@ -1,5 +1,5 @@
 import { Peer, BroadcastChannelDriver, NatsDriver, MqttDriver, SseDriver, type Driver } from "peerix";
-import { getConfig, loadConfig } from "@/lib/config";
+import { CONFIG } from "@/lib/config";
 
 /**
  * Creates a Peerix Driver instance based on the loaded config.
@@ -10,17 +10,15 @@ import { getConfig, loadConfig } from "@/lib/config";
  * - "sse" — uses the built-in SseDriver with Mercure-compatible options.
  */
 export async function createDriver(): Promise<Driver> {
-  const cfg = await loadConfig();
-
-  if (!cfg.driver) {
+  if (!CONFIG.driver) {
     return new BroadcastChannelDriver();
   }
 
-  switch (cfg.driver.type) {
+  switch (CONFIG.driver.type) {
     case "nats": {
       const { wsconnect } = await import("@nats-io/nats-core") as any;
-      const nc = await wsconnect({ servers: cfg.driver.servers, noEcho: true });
-      return new NatsDriver({ nc, prefix: cfg.driver.prefix });
+      const nc = await wsconnect({ servers: CONFIG.driver.servers, noEcho: true });
+      return new NatsDriver({ nc, prefix: CONFIG.driver.prefix });
     }
 
     case "mqtt": {
@@ -28,17 +26,17 @@ export async function createDriver(): Promise<Driver> {
       const connect = mqtt.connect || mqtt.default?.connect;
       if (!connect) throw new Error("mqtt module does not export connect");
 
-      const client = connect(cfg.driver.server);
-      return new MqttDriver({ client, prefix: cfg.driver.prefix });
+      const client = connect(CONFIG.driver.server);
+      return new MqttDriver({ client, prefix: CONFIG.driver.prefix });
     }
 
     case "sse": {
       return new SseDriver({
-        url: cfg.driver.url,
+        url: CONFIG.driver.url,
         subscriber: {},
         publisher: {
           headers: {
-            Authorization: `Bearer ${cfg.driver.publisherJwtKey}`,
+            Authorization: `Bearer ${CONFIG.driver.publisherJwtKey}`,
           },
         },
       });
@@ -51,12 +49,9 @@ export async function createDriver(): Promise<Driver> {
  */
 export async function createPeer(): Promise<Peer> {
   const driver = await createDriver();
-  const cfg = getConfig();
   return new Peer({
     driver,
-    iceServers: cfg?.iceServers,
-    iceTransportPolicy: cfg?.iceTransportPolicy,
+    iceServers: CONFIG.iceServers,
+    iceTransportPolicy: CONFIG.iceTransportPolicy,
   });
 }
-
-

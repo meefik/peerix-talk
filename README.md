@@ -14,13 +14,13 @@ Peer-to-peer WebRTC video conferencing app. No server required — peers connect
 
 ## Tech Stack
 
-| Layer     | Choices                                                             |
-| --------- | ------------------------------------------------------------------- |
-| Runtime   | React 19, TypeScript 6 (strict), Vite 8                             |
-| Styling   | Tailwind CSS v4, shadcn/ui, Radix UI, oklch theme tokens            |
-| Signaling | Peerix (NATS, MQTT, or SSE driver — configurable via `config.json`) |
-| i18n      | i18next + react-i18next (browser detection)                         |
-| Testing   | Playwright (e2e)                                                    |
+| Layer     | Choices                                                                |
+| --------- | ---------------------------------------------------------------------- |
+| Runtime   | React 19, TypeScript 6 (strict), Vite 8                                |
+| Styling   | Tailwind CSS v4, shadcn/ui, Radix UI, oklch theme tokens               |
+| Signaling | Peerix (NATS, MQTT, or SSE driver — configurable via `APP_CONFIG` env) |
+| i18n      | i18next + react-i18next (browser detection)                            |
+| Testing   | Playwright (e2e)                                                       |
 
 ## Quick Start
 
@@ -33,41 +33,10 @@ Open <http://localhost:5173>.
 
 ### Configure Signaling
 
-Edit `public/config.json`. BroadcastChannel is used by default for local testing. For production, set a `driver`:
+Set `VITE_APP_CONFIG` to a JSON string in `.env`. Vite bakes it into the build.
+BroadcastChannel is used by default when no driver is specified (local testing).
 
-```json
-{
-  "driver": {
-    "type": "mqtt",
-    "server": "wss://broker.emqx.io:8084/mqtt",
-    "prefix": "peerix/"
-  },
-  "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }],
-  "iceTransportPolicy": "all"
-}
-```
-
-Supported drivers (drop-in replacements for the `driver` object):
-
-NATS driver:
-
-```json
-{
-  "type": "nats",
-  "servers": ["wss://demo.nats.io:8443"],
-  "prefix": "peerix."
-}
-```
-
-SSE driver ([Mercure](https://mercure.rocks/)):
-
-```json
-{
-  "type": "sse",
-  "url": "http://localhost:8080/.well-known/mercure",
-  "publisherJwtKey": "eyJhbGciOiJIUzI1NiJ9.eyJtZXJjdXJlIjp7InB1Ymxpc2giOlsiKiJdLCJzdWJzY3JpYmUiOlsiKiJdfX0.bVXdlWXwfw9ySx7-iV5OpUSHo34RkjUdVzDLBcc6l_g"
-}
-```
+Copy `.env.example` to `.env` and set your config.
 
 ## Commands
 

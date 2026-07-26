@@ -15,41 +15,28 @@ export interface NatsDriverConfig {
 export interface SseDriverConfig {
   type: "sse";
   url: string;
-  publisherJwtKey: string;
+  publisherJwtKey?: string;
 }
 
-export type DriverConfig = MqttDriverConfig | NatsDriverConfig | SseDriverConfig;
+export type DriverConfig =
+  MqttDriverConfig | NatsDriverConfig | SseDriverConfig;
 
 export interface AppConfig {
-  driver: DriverConfig | null;
+  driver?: DriverConfig;
   iceServers?: RTCIceServer[];
   iceTransportPolicy?: RTCIceTransportPolicy;
 }
 
-let configPromise: Promise<AppConfig> | null = null;
-let resolvedConfig: AppConfig | null = null;
+export const CONFIG = parseConfig();
 
-export async function loadConfig(): Promise<AppConfig> {
-  if (resolvedConfig) return resolvedConfig;
+function parseConfig(): AppConfig {
+  const raw = import.meta.env.VITE_APP_CONFIG;
+  if (!raw) return {};
 
-  if (!configPromise) {
-    configPromise = (async () => {
-      const res = await fetch("/config.json");
-      if (!res.ok) throw new Error(`Failed to load config: ${res.status}`);
-      const data = await res.json();
-      const cfg: AppConfig = {
-        driver: data.driver ?? null,
-        iceServers: data.iceServers,
-        iceTransportPolicy: data.iceTransportPolicy,
-      };
-      resolvedConfig = cfg;
-      return cfg;
-    })();
+  try {
+    return JSON.parse(raw);
+  } catch {
+    console.warn("VITE_APP_CONFIG is not valid JSON, using defaults");
+    return {};
   }
-
-  return configPromise;
-}
-
-export function getConfig(): AppConfig | null {
-  return resolvedConfig;
 }

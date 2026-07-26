@@ -2,6 +2,7 @@ logs
 *.log
 .lock-wscript
 .DS_Store
+.env
 node_modules
 /dist/
 /docs/
